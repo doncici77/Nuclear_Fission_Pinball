@@ -4,20 +4,12 @@ public class StartShooter : MonoBehaviour
 {
     public GameObject neutronPrefab;
     public float shootForce = 10f;
+    public Transform shootTransform;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 클릭
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            GameObject ball = Instantiate(neutronPrefab, mousePos, Quaternion.identity);
-            ball.GetComponent<Neutron>().currentGen = 0;
-
-            // 마우스 위치에서 랜덤 방향으로 발사
-            Vector2 randomDir = Random.insideUnitCircle.normalized;
-            ball.GetComponent<Rigidbody2D>().AddForce(randomDir * shootForce, ForceMode2D.Impulse);
-        }
+        // 시간이 멈춰있으면(메뉴 상태 or 결과 상태) 발사 금지
+        if (Time.timeScale == 0) return;
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -33,4 +25,15 @@ public class StartShooter : MonoBehaviour
             }
         }
     }
+
+    public void ShootNeutron()
+    {
+        Vector2 createPos = new Vector2(shootTransform.position.x, shootTransform.position.y);
+
+        GameObject ball = Instantiate(neutronPrefab, createPos, Quaternion.identity);
+
+        // 마우스 위치에서 랜덤 방향으로 발사
+        Vector2 randomDir = Random.insideUnitCircle.normalized;
+        ball.GetComponent<Rigidbody2D>().AddForce(randomDir * shootForce, ForceMode2D.Impulse);
+    }   
 }

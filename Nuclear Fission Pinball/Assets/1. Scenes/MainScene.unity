@@ -130,6 +130,8 @@ GameObject:
   - component: {fileID: 473664254}
   - component: {fileID: 473664255}
   - component: {fileID: 473664256}
+  - component: {fileID: 473664258}
+  - component: {fileID: 473664257}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -166,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neutronPrefab: {fileID: 1573675140336965081, guid: c19447df4729ecc42ab197fecbc600b5, type: 3}
   shootForce: 10
+  shootTransform: {fileID: 1900511035}
 --- !u!114 &473664256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,11 +181,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3c7e0d7db2a6f4dbe1fd5009815f37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pools:
-  - tag: Neutron
-    prefab: {fileID: 1573675140336965081, guid: c19447df4729ecc42ab197fecbc600b5, type: 3}
-    size: 1000
-    shouldExpand: 1
+  neutronPrefab: {fileID: 1573675140336965081, guid: c19447df4729ecc42ab197fecbc600b5, type: 3}
+  initialSize: 1000
+--- !u!114 &473664257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473664253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a2dfbc5d0358c4685373d53dab5057, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetFPS: 30
+  warmUpTime: 3
+--- !u!114 &473664258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473664253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da90b3316b7be2442ace24f520527b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +731,7 @@ Transform:
   - {fileID: 1935001376}
   - {fileID: 1774603644}
   - {fileID: 695174090}
+  - {fileID: 1900511035}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1774603642
@@ -841,6 +868,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &1900511034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1900511035}
+  m_Layer: 0
+  m_Name: Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1900511035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900511034}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1437816515}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1935001374
 GameObject:
   m_ObjectHideFlags: 0

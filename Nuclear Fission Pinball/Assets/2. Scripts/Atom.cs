@@ -18,7 +18,7 @@ public class Atom : MonoBehaviour
     {
         for (int i = 0; i < splitCount; i++)
         {
-            GameObject newNeutron = ObjectPool.Instance.SpawnFromPool("Neutron", transform.position, Quaternion.identity);
+            GameObject newNeutron = ObjectPool.Instance.GetNeutron(transform.position, Quaternion.identity);
 
             Vector2 randomDir = Random.insideUnitCircle.normalized;
 

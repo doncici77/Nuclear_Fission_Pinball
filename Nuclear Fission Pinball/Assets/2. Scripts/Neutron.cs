@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Neutron : MonoBehaviour
 {
-    [Header("분열 설정")]
-    public int currentGen = 0;
-    public int maxGen = 4;        // 4번 분열 (1 -> 16개)
-    public float splitForce = 7f; // 튕겨 나가는 힘
+    [Header("설정")]
+    public float splitForce = 7f;
+    public int hitsRequired = 2; // 분열하기 위해 필요한 충돌 횟수
 
+    private int currentHitCount = 0; // 현재 충돌 횟수
     private SpriteRenderer sr;
 
     void Awake()
@@ -16,53 +16,68 @@ public class Neutron : MonoBehaviour
 
     void OnEnable()
     {
-        // 풀에서 꺼낼 때마다 색상 업데이트
+        // 태어날 때 초기화 (중요!)
+        currentHitCount = 0;
         UpdateColor();
+
+        if (GameManager.Instance != null) GameManager.Instance.RegisterNeutron();
+    }
+
+    void OnDisable()
+    {
+        if (GameManager.Instance != null) GameManager.Instance.UnregisterNeutron();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // 벽에 닿았고 + 아직 더 분열할 수 있다면
-        if (collision.gameObject.CompareTag("Wall") && currentGen < maxGen)
+        if (collision.gameObject.CompareTag("Wall"))
         {
-            Split();
+            currentHitCount++; // 충돌 횟수 증가
+
+            // 목표 횟수를 채웠는가?
+            if (currentHitCount >= hitsRequired)
+            {
+                Split();
+                currentHitCount = 0; // 분열 후 카운트 초기화 (다시 0부터 시작)
+            }
+
+            UpdateColor(); // 충돌할 때마다 색상 변경 (시각적 피드백)
         }
     }
 
     void Split()
     {
-        currentGen++; // 다음 세대로 진화
-        UpdateColor(); // 내 색깔 바꾸기
-
-        // 친구(분신) 소환
-        GameObject clone = ObjectPool.Instance.SpawnFromPool("Neutron", transform.position, Quaternion.identity);
+        // 최적화된 풀에서 가져오기
+        GameObject clone = ObjectPool.Instance.GetNeutron(transform.position, Quaternion.identity);
 
         if (clone != null)
         {
-            Neutron cloneScript = clone.GetComponent<Neutron>();
-            cloneScript.currentGen = this.currentGen; // 친구도 같은 세대
-            cloneScript.UpdateColor(); // 친구 색깔도 맞춤
-
-            // 서로 반대 방향 등으로 튀어나가게 힘 가하기
             Rigidbody2D myRb = GetComponent<Rigidbody2D>();
             Rigidbody2D cloneRb = clone.GetComponent<Rigidbody2D>();
 
             Vector2 randomDir = Random.insideUnitCircle.normalized;
 
-            // 팁: 서로 약간 밀어내면 더 자연스러움
-            myRb.AddForce(randomDir * splitForce, ForceMode2D.Impulse);
-            cloneRb.AddForce(-randomDir * splitForce, ForceMode2D.Impulse);
+            // 서로 밀어내기
+            if (myRb != null) myRb.AddForce(randomDir * splitForce, ForceMode2D.Impulse);
+            if (cloneRb != null) cloneRb.AddForce(-randomDir * splitForce, ForceMode2D.Impulse);
         }
     }
 
-    // 세대에 따라 색을 바꿔주는 함수
-    public void UpdateColor()
+    // 상태에 따라 색을 바꿔주는 함수 (충전량 표시)
+    void UpdateColor()
     {
-        if (sr == null) sr = GetComponent<SpriteRenderer>();
+        if (sr == null) return;
 
-        // 0세대(빨강) -> 1세대(주황) -> ... -> 끝세대(보라) 
-        // Color.HSVToRGB를 쓰면 무지개색으로 변환 가능!
-        float hue = (float)currentGen / maxGen; // 0.0 ~ 1.0 사이 값
-        sr.color = Color.HSVToRGB(hue, 1f, 1f);
+        // 충전이 안 됐으면 하얀색, 
+        // 터지기 직전(1번 남음)이면 빨간색 경고
+        if (currentHitCount == 0)
+        {
+            sr.color = Color.white; // 평상시
+        }
+        else
+        {
+            // 터지기 일보 직전! (노란색이나 붉은 계열 추천)
+            sr.color = new Color(1f, 0.5f, 0f); // 주황색
+        }
     }
 }
